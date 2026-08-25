@@ -1,0 +1,29 @@
+# ============================================================
+# UE5 学习仓库 .gitignore（只跟踪源码 + 配置，不传重型资源）
+# 目标：仓库 <10MB，专注记录 C++ 代码成长轨迹
+# ============================================================
+
+# ---- Unreal Engine 生成的重型/可重建目录（绝不提交）----
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+.vscode/
+
+# ---- 生成的 Visual Studio 解决方案文件（UE 会自动重建）----
+*.sln
+*.slnx
+
+# ---- 项目本地 AI / 智能体数据（与代码无关）----
+.workbuddy/
+
+# ---- Content 资源（按约定不跟踪，仓库保持轻量）----
+# 之后若想加入资源，删除此行并用 Git LFS 管理大文件即可。
+Content/
+
+# ---- 操作系统垃圾文件 ----
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
