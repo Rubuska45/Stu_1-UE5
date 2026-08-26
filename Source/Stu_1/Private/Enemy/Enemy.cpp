@@ -4,7 +4,7 @@
 #include "Enemy/Enemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-
+#include "../../../../Intermediate/ProjectFiles/DebugMacros.h"
 
 AEnemy::AEnemy()
 {
@@ -23,6 +23,16 @@ void AEnemy::BeginPlay()
 	
 }
 
+void AEnemy::PlayHiReactMontage(const FName& SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && HiReactMontage) {
+		AnimInstance->Montage_Play(HiReactMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, HiReactMontage);
+
+	}
+}
+
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -33,5 +43,11 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemy::GetHit(const FVector& ImpactPoint)
+{
+	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);
+	PlayHiReactMontage(FName("FromLeft"));
 }
 
