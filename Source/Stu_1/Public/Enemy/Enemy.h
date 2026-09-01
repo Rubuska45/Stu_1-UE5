@@ -7,7 +7,8 @@
 #include "Interfaces/HitInterface.h"
 #include "Enemy.generated.h"
 
-class UAnimMonatge;
+class UAnimMontage;
+class UNiagaraSystem;
 
 UCLASS()
 class STU_1_API AEnemy : public ACharacter , public IHitInterface
@@ -37,4 +38,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages);
 	UAnimMontage* HiReactMontage;
 	
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UNiagaraSystem* HitParticles;
 };
