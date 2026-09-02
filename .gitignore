@@ -27,6 +27,11 @@ ghp_*.txt
 # 之后若想加入资源，删除此行并用 Git LFS 管理大文件即可。
 Content/
 
+# ---- AI 生成的 3D 资产源文件（glb/fbx/zip/预览图，体积大且可再生）----
+# 导入 UE 后这些会变成 Content/ 里的 .uasset，而 Content/ 本身也不跟踪，
+# 意味着这类资产在仓库里不留备份。要留档需删掉此行并改用 Git LFS。
+GeneratedAssets/
+
 # ---- 操作系统垃圾文件 ----
 Thumbs.db
 ehthumbs.db
