@@ -9,7 +9,7 @@ public class Stu_1 : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         // 加上 Engine！处理AActor、UWorld、DrawDebug、GEngine这些
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Niagara" , "GeometryCollectionEngine"});
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Niagara" , "GeometryCollectionEngine","UMG"});
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 

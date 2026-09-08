@@ -9,6 +9,8 @@
 
 class UAnimMontage;
 class UNiagaraSystem;
+class UAttributeComponent;
+class UHealthBarComponent;
 
 UCLASS()
 class STU_1_API AEnemy : public ACharacter , public IHitInterface
@@ -31,6 +33,13 @@ protected:
 	*/
 	void PlayHiReactMontage(const FName& SectionName);
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;
+
+	UPROPERTY(VisibleAnywhere)
+	UHealthBarComponent* HealthBerWidget;
+	
 	/**
 	* Animation montages
 	*/

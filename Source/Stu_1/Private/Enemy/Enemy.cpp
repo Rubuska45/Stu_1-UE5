@@ -9,6 +9,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "Component/AttributeComponent.h"
+#include "HUD/HealthBarComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -19,12 +21,20 @@ AEnemy::AEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
+	HealthBerWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBer"));
+	HealthBerWidget->SetupAttachment(GetRootComponent());
 }
 
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (HealthBerWidget)
+	{
+		HealthBerWidget->SetHealthPercent(0.5f);
+	}
 }
 
 void AEnemy::PlayHiReactMontage(const FName& SectionName)

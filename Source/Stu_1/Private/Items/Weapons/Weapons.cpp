@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Interfaces/HitInterface.h"
+#include "NiagaraComponent.h"
 
 AWeapons::AWeapons() {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
@@ -40,6 +41,11 @@ void AWeapons::Equip(USceneComponent* InParent, FName InSocketName)
 			EquipSound,
 			GetActorLocation()
 		);
+	}
+	
+	if (EmbersEffect)
+	{
+		EmbersEffect->Deactivate();
 	}
 }
 

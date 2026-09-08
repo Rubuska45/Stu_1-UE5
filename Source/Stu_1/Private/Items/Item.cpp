@@ -5,6 +5,7 @@
 #include "../../../../Intermediate/ProjectFiles/DebugMacros.h"
 #include "Components/SphereComponent.h"
 #include "SlashCharacter.h"
+#include "NiagaraComponent.h"
 
 
 AItem::AItem()
@@ -26,6 +27,9 @@ AItem::AItem()
 	Sphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	Sphere->SetGenerateOverlapEvents(true);
 	Sphere->SetSphereRadius(50.f); // 半径可按你的武器尺寸调整
+
+	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
+	EmbersEffect->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()

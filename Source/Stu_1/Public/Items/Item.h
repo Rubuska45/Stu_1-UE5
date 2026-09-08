@@ -8,6 +8,7 @@
 
 class USphereComponent;
 
+
 enum class EItemState : uint8
 {
 	EIS_Hovering,
@@ -47,12 +48,17 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	EItemState ItemState = EItemState::EIS_Hovering;
+
+	UPROPERTY(VisibleAnywhere);
+	USphereComponent* Sphere;
+
+	UPROPERTY(EditAnywhere)
+	class UNiagaraComponent* EmbersEffect;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float RunningTime;
 
-	UPROPERTY(VisibleAnywhere);
-	USphereComponent* Sphere;
+	
 	
 };
 
