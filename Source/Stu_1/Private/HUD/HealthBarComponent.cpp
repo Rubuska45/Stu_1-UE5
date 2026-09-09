@@ -8,7 +8,7 @@ void UHealthBarComponent::SetHealthPercent(float Percent)
 {
 	if (HealthBarWidget == nullptr)
 	{
-	HealthBarWidget = Cast<UHealthBar>(GetUserWidgetObject());
+		HealthBarWidget = Cast<UHealthBar>(GetUserWidgetObject());
 
 	}
 	if (HealthBarWidget && HealthBarWidget->HealthBar)

@@ -2,6 +2,7 @@
 
 
 #include "Enemy/Enemy.h"
+#include "Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../../../../Intermediate/ProjectFiles/DebugMacros.h"
@@ -31,9 +32,38 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (HealthBerWidget)
+
+}
+
+void AEnemy::Die()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && DeathMontage)
 	{
-		HealthBerWidget->SetHealthPercent(0.5f);
+
+		AnimInstance->Montage_Play(DeathMontage);
+
+		const int32 Selection = FMath::RandRange(0, 3);
+		FName SectionName = FName();
+		switch (Selection) {
+		case 0:
+			SectionName = FName("Death_1");
+			break;
+		case 1:
+			SectionName = FName("Death_2");
+			break;
+		case 2:
+			SectionName = FName("Death_3");
+			break;
+		case 3:
+			SectionName = FName("Death_4");
+			break;
+		default:
+			break;
+		}
+
+		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+
 	}
 }
 
@@ -63,7 +93,16 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	//DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);
 
-	DirectionalHitReact(ImpactPoint);
+	if (Attributes && Attributes->IsAlive()) 
+	{
+		DirectionalHitReact(ImpactPoint);
+	}
+	else {
+		Die();
+
+	}
+
+	
 
 	if (HitSound)
 	{
@@ -121,5 +160,18 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 	}
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);*/
+}
+
+float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Attributes)
+	{
+		Attributes->ReceiveDamage(DamageAmount);
+		if (HealthBerWidget)
+		{
+			HealthBerWidget->SetHealthPercent(Attributes->GetHealthPercent());
+		}
+	}
+	return DamageAmount;
 }
 

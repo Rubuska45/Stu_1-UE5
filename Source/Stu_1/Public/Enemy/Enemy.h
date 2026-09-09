@@ -25,13 +25,19 @@ public:
 
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	void DirectionalHitReact(const FVector& ImpactPoint);
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 protected:
 	virtual void BeginPlay() override;
+
+	void Die();
 
 	/**
 	* Animation montages
 	*/
 	void PlayHiReactMontage(const FName& SectionName);
+
+
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -46,6 +52,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages);
 	UAnimMontage* HiReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages);
+	UAnimMontage* DeathMontage;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* HitSound;

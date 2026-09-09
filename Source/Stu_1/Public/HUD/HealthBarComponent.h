@@ -18,4 +18,5 @@ public:
 private:
 	UPROPERTY()
 	class UHealthBar* HealthBarWidget;
+
 };
