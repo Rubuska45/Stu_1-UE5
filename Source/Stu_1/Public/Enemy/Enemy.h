@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Items/CharacterType.h"
 #include "Enemy.generated.h"
 
 class UAnimMontage;
@@ -37,6 +38,8 @@ protected:
 	*/
 	void PlayHiReactMontage(const FName& SectionName);
 
+	UPROPERTY(BlueprintReadOnly)
+	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
 
@@ -61,4 +64,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UNiagaraSystem* HitParticles;
+	
+	UPROPERTY()
+	AActor* CombatTarget;
+
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
 };

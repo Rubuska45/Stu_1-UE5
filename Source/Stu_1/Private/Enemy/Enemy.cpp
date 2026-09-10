@@ -31,7 +31,9 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (HealthBerWidget) {
+		HealthBerWidget->SetVisibility(false);
+	}
 
 }
 
@@ -48,15 +50,19 @@ void AEnemy::Die()
 		switch (Selection) {
 		case 0:
 			SectionName = FName("Death_1");
+			DeathPose = EDeathPose::EDP_Death1;
 			break;
 		case 1:
 			SectionName = FName("Death_2");
+			DeathPose = EDeathPose::EDP_Death2;
 			break;
 		case 2:
 			SectionName = FName("Death_3");
+			DeathPose = EDeathPose::EDP_Death3;
 			break;
 		case 3:
 			SectionName = FName("Death_4");
+			DeathPose = EDeathPose::EDP_Death4;
 			break;
 		default:
 			break;
@@ -65,6 +71,13 @@ void AEnemy::Die()
 		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 
 	}
+	if (HealthBerWidget)
+	{
+		HealthBerWidget->SetVisibility(false);
+	}
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(3.f);
 }
 
 void AEnemy::PlayHiReactMontage(const FName& SectionName)
@@ -81,6 +94,18 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (CombatTarget)
+	{
+		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
+		if (DistanceToTarget > CombatRadius)
+		{
+			CombatTarget = nullptr;
+			if (HealthBerWidget)
+			{
+				HealthBerWidget->SetVisibility(false);
+			}
+		}
+	}
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -92,6 +117,10 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	//DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);
+
+	if (HealthBerWidget) {
+		HealthBerWidget->SetVisibility(true);
+	}
 
 	if (Attributes && Attributes->IsAlive()) 
 	{
@@ -172,6 +201,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 			HealthBerWidget->SetHealthPercent(Attributes->GetHealthPercent());
 		}
 	}
+	CombatTarget = EventInstigator->GetPawn();
 	return DamageAmount;
 }
 
