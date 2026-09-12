@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+Ôªø// Fill out your copyright notice in the Description page of Project Settings.
 
 using UnrealBuildTool;
 
@@ -8,8 +8,8 @@ public class Stu_1 : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        // º”…œ Engine£°¥¶¿ÌAActor°¢UWorld°¢DrawDebug°¢GEngine’‚–©
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Niagara" , "GeometryCollectionEngine","UMG"});
+        // Âä†‰∏ä EngineÔºÅÂ§ÑÁêÜAActor„ÄÅUWorld„ÄÅDrawDebug„ÄÅGEngineËøô‰∫õ
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "Niagara" , "GeometryCollectionEngine","UMG", "AIModule"});
 
         PrivateDependencyModuleNames.AddRange(new string[] { });
 

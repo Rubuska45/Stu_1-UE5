@@ -12,6 +12,10 @@
 #include "NiagaraSystem.h"
 #include "Component/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "AIController.h"
+#include"Navigation/PathFollowingComponent.h"
+
 
 AEnemy::AEnemy()
 {
@@ -26,6 +30,11 @@ AEnemy::AEnemy()
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 	HealthBerWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBer"));
 	HealthBerWidget->SetupAttachment(GetRootComponent());
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch= false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 }
 
 void AEnemy::BeginPlay()
@@ -33,6 +42,21 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	if (HealthBerWidget) {
 		HealthBerWidget->SetVisibility(false);
+	}
+
+	EnemyController = Cast<AAIController>(GetController());
+	if (EnemyController && PatrolTarget)
+	{
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PatrolTarget);
+		MoveRequest.SetAcceptanceRadius(15.f);
+		FNavPathSharedPtr NavPath;
+		EnemyController->MoveTo(MoveRequest, &NavPath);
+		TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
+		for (auto& Point : PathPoints) {
+			const FVector& Location = Point.Location;
+			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
+		}
 	}
 
 }
