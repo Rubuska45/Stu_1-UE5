@@ -9,6 +9,9 @@
 - 核心角色类：`SlashCharacter`；主武器类：`AWeapons`
 
 ## 学习路线 / 里程碑
+
+> 最近更新：2026-09-13 — 敌人 AI 巡逻与寻路（当前 HEAD `616f550`）。每次上传前会同步更新本文件。
+
 1. **武器拾取与装备**
    - `SlashCharacter` 与 `AWeapons` 通过 Overlap 检测 → 按 `E` 键 pickup / equip 切换 → 挂载到专用武器 Socket。
 2. **无武器三段拳击连招 `FnsAttack`**
@@ -17,6 +20,23 @@
 3. **武器 Trace 调试（`Weapons.cpp`）**
    - 围绕 `BoxTraceStart` / `BoxTraceEnd` 两个 SceneComponent 排查 trace 起点/终点与命中逻辑。
    - 屏蔽自身命中：用 `GetAttachParentActor()` 忽略武器持有者实例（而非按通道/类一刀切）。
+4. **敌人受击反馈系统**（`899cd61` `61c4049` `37732af`）
+   - 实现 `IHitInterface` 受击接口：被武器命中时按攻击来源方向做受击反应（方向反应），而非固定倒地。
+   - 修复「一次攻击多次碰撞」：同一挥击对同个目标只生效一次（防连段重复扣血 / 重复触发特效）。
+   - 受击 / 武器攻击特效：方向反应动画 + 音效 + Niagara 粒子反馈。
+5. **可破坏罐子与金币战利品**（`29173d3` `9cee810` `b7c19f7`）
+   - 武器命中时触发蓝图可实现的物理场事件，打通「击碎罐子」链路。
+   - 罐子用 Chaos 几何集合 + 物理场实现可破坏效果。
+   - 罐子被击中随机掉落金币 / 财宝，每个战利品可配置独立价值；金币可被玩家拾取。
+6. **敌人血条与死亡系统**（`62afc32` `e40d865` `14b32dd`）
+   - `HealthBarComponent` + 属性组件：敌人血条 UI 与血量属性解耦。
+   - 血量实时同步显示；随机死亡动画（`EDeathPose` 枚举 + `Blend Poses by Enum`）。
+   - 死亡姿势保持：尸体约 3 秒后销毁；血条随死亡状态显隐控制。
+7. **敌人 AI 巡逻与寻路（本次）**（`1b0ce16` `616f550`）
+   - `UPawnSensingComponent` 感知玩家：进入视锥即切 `EES_Chasing`，调用 AI 控制器 `MoveTo` 寻路追击。
+   - 玩家跑出战斗半径（CombatRadius）自动回到 `EES_Patrolling` 巡逻；进入 `AttackRadius` 即攻击。
+   - 受击时锁定攻击者并追逐。
+   - 状态机 `EEnemyState`（Patrolling / Chasing / Attacking）驱动 `Tick` 分支逻辑，`AddDynamic` 订阅 `OnSeePawn` 事件。
 
 ## 仓库结构
 | 路径 | 说明 | 是否跟踪 |
@@ -37,7 +57,7 @@
 4. 用 UE 打开 `Stu_1.uproject`，等待编译 C++ 模块即可运行。
 
 ## 提交约定
-- 每次完成功能 / 修复：`git add Source Config` → `git commit -m "中文说明"` → `git push`
+- 每次完成功能 / 修复：**先更新本 README 的「学习路线 / 里程碑」**，再 `git add Source Config Stu_1.uproject README.md` → `git commit -m "中文说明"` → `git push`。
 - `Content` 资源不纳入仓库，请在本机另存备份。
 
 ## 声明
