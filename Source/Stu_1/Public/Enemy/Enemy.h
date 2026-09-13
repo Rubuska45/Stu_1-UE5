@@ -12,6 +12,7 @@ class UAnimMontage;
 class UNiagaraSystem;
 class UAttributeComponent;
 class UHealthBarComponent;
+class UPawnSensingComponent;
 
 UCLASS()
 class STU_1_API AEnemy : public ACharacter , public IHitInterface
@@ -22,6 +23,8 @@ public:
 	AEnemy();
 	
 	virtual void Tick(float DeltaTime) override;
+	void CheckPatrolTarget();
+	void CheckCombatTarget();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
@@ -32,16 +35,30 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Die();
+	bool InTargetRange(AActor* Target , double Radius);
+	void MoveToTarget(AActor* Target);
+	AActor* ChoosePatrolTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
 
 	/**
 	* Animation montages
 	*/
-	void PlayHiReactMontage(const FName& SectionName);
+	void PlayHitReactMontage(const FName& SectionName);
 
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;
+
+
+
 private:
+	/*
+	* Components
+	*/
 
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;
@@ -49,6 +66,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBerWidget;
 	
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing;
+
 	/**
 	* Animation montages
 	*/
@@ -71,6 +91,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 500.f;
 
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;
 	/* 
 	* µ¼º½
 	*/
@@ -84,4 +106,14 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
 	TArray<AActor*> PatrolTargets;
+
+	FTimerHandle PatrolTimer;
+	void PatrolTimerFinished();
+
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float WaitMin = 5.f; 
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
+	float WaitMax = 10.f;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 };

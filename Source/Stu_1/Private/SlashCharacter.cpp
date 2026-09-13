@@ -34,6 +34,7 @@ void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Tags.Add(FName("SlashCharacter"));
 }
 
 void ASlashCharacter::Tick(float DeltaTime)
