@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaceCharacter.h"
 #include "Items\CharacterType.h"
 #include "SlashCharacter.generated.h"
 
@@ -12,12 +12,10 @@ class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 class UAnimMonatge;
-class AWeapons;
-
 
 
 UCLASS()
-class STU_1_API ASlashCharacter : public ACharacter
+class STU_1_API ASlashCharacter : public ABaceCharacter
 {
 	GENERATED_BODY()
 
@@ -33,18 +31,18 @@ protected:
 	void Turn(float Value);
 	void LookUp(float Value);
 	void EKeyPressed();
-	void Attack();
+	virtual void Attack() override;
 	void FnsAttack();
+	virtual bool CanAttack() override;
 
 	/*
 	* Callbacks for input
 	*/
-	void PlayAttackMontage();
+	virtual void PlayAttackMontage() override;
 	void PlayFnsAttackMontage();
 	void ResetFnsCombo();
 	void PlayEquipMontage(FName SectionName);
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
+	virtual void AttackEnd() override;
 
 	bool CanDisarm();
 	bool CanArm();
@@ -82,12 +80,7 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
-	/**
-	* Animation montages
-	*/
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages);
-	UAnimMontage* AttackMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages);
 	UAnimMontage* EquipMontage;
@@ -103,15 +96,12 @@ private:
 
 	FTimerHandle FnsComboResetTimer;
 
-	UPROPERTY(VisibleAnywhere, Category = Weapon);
-	AWeapons* EquippedWeapon;
+
 
 public:
 	FORCEINLINE  void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE  ECharacterState GetCharacterState() const { return CharacterState; }
 
 
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
 };

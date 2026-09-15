@@ -68,6 +68,7 @@ void ASlashCharacter::MoveForward(float Value) {
 		AddMovementInput(Direction, Value);
 	}
 }
+
 void ASlashCharacter::MoveRight(float Value) {
 	if (ActionState != EActionState::EAS_Unoccupied) return;
 	if ((Controller != nullptr) && (Value != 0.f)) {
@@ -78,6 +79,7 @@ void ASlashCharacter::MoveRight(float Value) {
 		AddMovementInput(Direction, Value);
 	}
 }
+
 void ASlashCharacter::Turn(float Value) {
 	AddControllerYawInput(Value);
 }
@@ -112,12 +114,10 @@ void ASlashCharacter::EKeyPressed()
 		}
 	}
 }
+
 void ASlashCharacter::Attack() 
 {
-	const bool bCanAttack =
-		ActionState == EActionState::EAS_Unoccupied && 
-		CharacterState != ECharacterState::ECS_Unequipped;
-	if (bCanAttack)
+	if (CanAttack())
 	{
 		FnsComboIndex = 0; // 切换为用剑攻击时清空拳击连击计数
 		PlayAttackMontage();
@@ -171,7 +171,8 @@ bool ASlashCharacter::CanDisarm()
 
 bool ASlashCharacter::CanArm()
 {
-	return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
 }
 
 void ASlashCharacter::Disarm()
@@ -198,6 +199,12 @@ void ASlashCharacter::FnsAttack()
 		PlayFnsAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
 	}
+}
+
+bool ASlashCharacter::CanAttack()
+{
+	return ActionState == EActionState::EAS_Unoccupied &&
+		CharacterState != ECharacterState::ECS_Unequipped;
 }
 
 void ASlashCharacter::PlayFnsAttackMontage()
@@ -238,16 +245,6 @@ void ASlashCharacter::AnimNotify_FnsAttackEnd()
 
 	FnsAttackEnd();
 }
-
-void ASlashCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
-{
-	if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
-		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
-		EquippedWeapon->IgnoreActors.Empty();
-	}
-}
-
-
 
 void ASlashCharacter::FinishEquipping()
 {
