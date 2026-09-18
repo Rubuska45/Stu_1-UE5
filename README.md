@@ -10,7 +10,7 @@
 
 ## 学习路线 / 里程碑
 
-> 最近更新：2026-09-13 — 敌人 AI 巡逻与寻路（当前 HEAD `616f550`）。每次上传前会同步更新本文件。
+> 最近更新：2026-09-18 — 战斗系统重构：ABaceCharacter 共享基类 + montage 段数组接口（上一 HEAD `328b381`）。每次上传前会同步更新本文件。
 
 1. **武器拾取与装备**
    - `SlashCharacter` 与 `AWeapons` 通过 Overlap 检测 → 按 `E` 键 pickup / equip 切换 → 挂载到专用武器 Socket。
@@ -37,6 +37,11 @@
    - 玩家跑出战斗半径（CombatRadius）自动回到 `EES_Patrolling` 巡逻；进入 `AttackRadius` 即攻击。
    - 受击时锁定攻击者并追逐。
    - 状态机 `EEnemyState`（Patrolling / Chasing / Attacking）驱动 `Tick` 分支逻辑，`AddDynamic` 订阅 `OnSeePawn` 事件。
+8. **战斗系统重构：共享基类 + montage 段数组接口**（2026-09-18）
+   - 抽出 `ABaceCharacter` 作为 `SlashCharacter` 与 `AEnemy` 的共享基类，统一 `PlayAttackMontage` / `PlayDeathMontage` / `HandleDamage` / `PlayHitSound` / `SpawnHitParticles` / `DisableCapsule` / `IsAlive` 等受击与战斗逻辑（攻击 / 死亡 montage 改为返回随机段索引的 `int32`）。
+   - montage 随机段改为数组驱动：基类暴露 `AttackMontageSections` / `DeathMontageSections` 两个 `TArray<FName>`（`EditAnywhere`，Category = Combat），在 Details 面板即可增删动画段、无需改 C++；通用 `PlayRandomMontageSection(Montage, SectionsArray)` 负责随机播。
+   - 去硬编码：`SetLifeSpan(3.f)` → `DeathLifeSpan=8.f`；`MaxWalkSpeed=125/300` → `PartrollingSpeed` / `ChasingSpeed`；攻击间隔内联值 → `AttackMin` / `AttackMax`；武器类可配置 `WeaponsClass`（敌人在 `BeginPlay` 按类生成并装备武器）。
+   - `EDeathPose` 去 `EDP_Alive`、加 `EDP_MAX`；`EEnemyState` 加 `EES_Dead` / `EES_Engaged`，AI 状态机拆成 `HideHealthBar` / `ChaseTarget` / `LoseInterest` / `StartPatrolling` 等命名方法。
 
 ## 仓库结构
 | 路径 | 说明 | 是否跟踪 |

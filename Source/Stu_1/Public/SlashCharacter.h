@@ -38,7 +38,6 @@ protected:
 	/*
 	* Callbacks for input
 	*/
-	virtual void PlayAttackMontage() override;
 	void PlayFnsAttackMontage();
 	void ResetFnsCombo();
 	void PlayEquipMontage(FName SectionName);
